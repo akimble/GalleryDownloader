@@ -1,5 +1,3 @@
-import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -10,9 +8,10 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
-import java.awt.FlowLayout;
-import java.awt.CardLayout;
-import java.awt.GridLayout;
+import java.awt.GridBagLayout;
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
+import net.miginfocom.swing.MigLayout;
 
 public class GalleryDownloader extends JFrame implements ActionListener {
 
@@ -38,24 +37,27 @@ public class GalleryDownloader extends JFrame implements ActionListener {
 	 * Initialize the components
 	 */
 	public GalleryDownloader() {
+		init();
+	}
+
+	private void init() {
 		// Create the frame
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
-		contentPane.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		contentPane.setLayout(new MigLayout("", "[39px][53px][][][][][]", "[20px]"));
+		
+		// Create the ComboBox
+		String[] domainStrings = { "", "Pixiv", "Imgur" };
 		
 		// Create a label
 		JLabel domainLabel = new JLabel("Domain:");
-		contentPane.add(domainLabel);
-		
-		// Create the ComboBox
-		String[] domainStrings = { "Pixiv", "DeviantArt" };
+		contentPane.add(domainLabel, "cell 4 0,alignx left,aligny center");
 		JComboBox domainList = new JComboBox(domainStrings);
-		domainList.setSelectedIndex(0);
 		domainList.addActionListener(this);
-		contentPane.add(domainList);
+		contentPane.add(domainList, "cell 5 0,alignx left,aligny top");
 	}
 
 	public void actionPerformed(ActionEvent arg0) {
@@ -63,18 +65,35 @@ public class GalleryDownloader extends JFrame implements ActionListener {
 		String domainName = (String)cb.getSelectedItem();
 		
 		switch(domainName){
+			case "Imgur":
+				revealImgurFields(domainName);
+				break;
 			case "Pixiv":
-				updatePixivField(domainName);
+				revealPixivFields(domainName);
+				break;
 		}
 	}
 
-	// Create a Label and TextField for the gallery domain
-	private void updatePixivField(String domainName) {
-		JLabel memberIDLabel = new JLabel("Member ID:");
-		contentPane.add(memberIDLabel);
+	// Create the Imgur fields
+	private void revealImgurFields(String domainName) {
+		JLabel urlLabel = new JLabel("URL:");
+		contentPane.add(urlLabel, "cell 4 1,alignx left,aligny center");
 		
-		JTextField pixivID = new JTextField(20);
-		contentPane.add(pixivID);
+		JTextField imgurURL = new JTextField(10);
+		contentPane.add(imgurURL, "cell 5 1,alignx left,aligny top");
+		
+		revalidate();
+	}
+
+	// Create the Pixiv fields
+	private void revealPixivFields(String domainName) {System.out.println(domainName);
+		JLabel memberIDLabel = new JLabel("Member ID:");
+		contentPane.add(memberIDLabel, "cell 4 1,alignx left,aligny center");
+		
+		JTextField pixivID = new JTextField(10);
+		contentPane.add(pixivID, "cell 5 1,alignx left,aligny top");
+		
+		revalidate();
 	}
 
 }
