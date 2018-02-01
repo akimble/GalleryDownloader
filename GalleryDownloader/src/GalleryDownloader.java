@@ -15,7 +15,8 @@ import net.miginfocom.swing.MigLayout;
 
 public class GalleryDownloader extends JFrame implements ActionListener {
 
-	private JPanel contentPane;
+	private JPanel headerPane;
+	private JPanel fieldsPane;
 
 	/**
 	 * Launch the application.
@@ -44,20 +45,23 @@ public class GalleryDownloader extends JFrame implements ActionListener {
 		// Create the frame
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
-		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		setContentPane(contentPane);
-		contentPane.setLayout(new MigLayout("", "[39px][53px][][][][][]", "[20px]"));
+		headerPane = new JPanel();
+		headerPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(headerPane);
+		headerPane.setLayout(new MigLayout("", "[140.00px][][grow]", "[20px][grow]"));
 		
 		// Create the ComboBox
 		String[] domainStrings = { "", "Pixiv", "Imgur" };
 		
 		// Create a label
 		JLabel domainLabel = new JLabel("Domain:");
-		contentPane.add(domainLabel, "cell 4 0,alignx left,aligny center");
+		headerPane.add(domainLabel, "cell 1 0,alignx left,aligny center");
 		JComboBox domainList = new JComboBox(domainStrings);
 		domainList.addActionListener(this);
-		contentPane.add(domainList, "cell 5 0,alignx left,aligny top");
+		headerPane.add(domainList, "cell 2 0,alignx left,aligny top");
+		
+		fieldsPane = new JPanel();
+		headerPane.add(fieldsPane, "cell 0 1 3 1,grow");
 	}
 
 	public void actionPerformed(ActionEvent arg0) {
@@ -74,26 +78,32 @@ public class GalleryDownloader extends JFrame implements ActionListener {
 		}
 	}
 
-	// Create the Imgur fields
+	// Remove all fields in fieldsPane and then create the Imgur fields
 	private void revealImgurFields(String domainName) {
+		fieldsPane.removeAll();
+		
 		JLabel urlLabel = new JLabel("URL:");
-		contentPane.add(urlLabel, "cell 4 1,alignx left,aligny center");
+		fieldsPane.add(urlLabel);
 		
 		JTextField imgurURL = new JTextField(10);
-		contentPane.add(imgurURL, "cell 5 1,alignx left,aligny top");
+		fieldsPane.add(imgurURL);
 		
 		revalidate();
+		repaint();
 	}
 
-	// Create the Pixiv fields
-	private void revealPixivFields(String domainName) {System.out.println(domainName);
+	// Remove all fields in fieldsPane and then create the Pixiv fields
+	private void revealPixivFields(String domainName) {
+		fieldsPane.removeAll();
+		
 		JLabel memberIDLabel = new JLabel("Member ID:");
-		contentPane.add(memberIDLabel, "cell 4 1,alignx left,aligny center");
+		fieldsPane.add(memberIDLabel);
 		
 		JTextField pixivID = new JTextField(10);
-		contentPane.add(pixivID, "cell 5 1,alignx left,aligny top");
+		fieldsPane.add(pixivID);
 		
 		revalidate();
+		repaint();
 	}
 
 }
