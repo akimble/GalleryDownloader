@@ -21,6 +21,8 @@ import org.jsoup.select.Elements;
 
 import javax.swing.JLabel;
 import net.miginfocom.swing.MigLayout;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 
 @SuppressWarnings("serial")
 public class GalleryDownloader extends JFrame {
@@ -30,6 +32,8 @@ public class GalleryDownloader extends JFrame {
 	private JPanel fieldsPane;
 	private JTextField imgurURL;
 	private JTextField pixivID;
+	private JMenuBar menuBar;
+	private JMenuItem mntmFile;
 
 	// Launch the application.
 	public static void main(String[] args) {
@@ -55,6 +59,14 @@ public class GalleryDownloader extends JFrame {
 		// Create the frame
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
+		
+		// Create the Menu bar
+		menuBar = new JMenuBar();
+		setJMenuBar(menuBar);
+		
+		mntmFile = new JMenuItem("File");
+		menuBar.add(mntmFile);
+		
 		headerPane = new JPanel();
 		headerPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(headerPane);
