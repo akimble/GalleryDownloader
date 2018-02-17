@@ -9,6 +9,7 @@ import java.net.URL;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -23,17 +24,19 @@ import javax.swing.JLabel;
 import net.miginfocom.swing.MigLayout;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JMenu;
 
 @SuppressWarnings("serial")
 public class GalleryDownloader extends JFrame {
 
-	private static final String folderPath = "C:/Users/Andrew/Downloads/";
+	private static String folderPath = "C:/Users/Andrew/Downloads/";
 	private JPanel headerPane;
 	private JPanel fieldsPane;
 	private JTextField imgurURL;
 	private JTextField pixivID;
 	private JMenuBar menuBar;
-	private JMenuItem mntmFile;
+	private JMenu mnFile;
+	private JMenuItem mntmSetFolder;
 
 	// Launch the application.
 	public static void main(String[] args) {
@@ -60,13 +63,16 @@ public class GalleryDownloader extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		
-		// Create the Menu bar
+		// Create the JMenuBar -> JMenu -> JMenuItem
 		menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
+		mnFile = new JMenu("File");
+		menuBar.add(mnFile);
+		mntmSetFolder = new JMenuItem("Set folder...");
+		mnFile.add(mntmSetFolder);
+		mntmSetFolder.addActionListener(mntmActionListener());
 		
-		mntmFile = new JMenuItem("File");
-		menuBar.add(mntmFile);
-		
+		// Create the first JPanel
 		headerPane = new JPanel();
 		headerPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(headerPane);
@@ -80,7 +86,7 @@ public class GalleryDownloader extends JFrame {
 		JComboBox domainList = new JComboBox(domainStrings);
 		domainList.addActionListener(comboBoxActionListener());
 		
-		// Create and add new JPanel under headerPane
+		// Create a new JPanel to put under headerPane for most of the dynamic fields
 		fieldsPane = new JPanel();
 		
 		// Add components to headerPane
@@ -89,6 +95,23 @@ public class GalleryDownloader extends JFrame {
 		headerPane.add(fieldsPane, "cell 0 1 3 1,grow");
 	}
 	
+	// Set the download folder
+	private ActionListener mntmActionListener() {
+		ActionListener res = new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				JFileChooser chooser = new JFileChooser();
+				chooser.setCurrentDirectory(null); // Passing in null = OS's default directory
+				chooser.setDialogTitle("Set download folder...");
+				chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+				
+				if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION)
+					folderPath = chooser.getCurrentDirectory().toString();
+			}
+		};
+		
+		return res;
+	}
+
 	// Call respective method for creating the chosen domain's fields
 	private ActionListener comboBoxActionListener(){
 		ActionListener res = new ActionListener(){
@@ -142,6 +165,7 @@ public class GalleryDownloader extends JFrame {
 		return res;
 	}
 	
+	// Download the image from the source URL
 	protected void downloadImage(String imageSrc) {
 		String strImageName = imageSrc.substring(imageSrc.lastIndexOf("/") + 1);
 		
@@ -173,9 +197,7 @@ public class GalleryDownloader extends JFrame {
 		fieldsPane.removeAll();
 		
 		JLabel urlLabel = new JLabel("URL:");
-		
 		imgurURL = new JTextField(10);
-		
 		JButton submitBtn = new JButton("Get Gallery");
 		submitBtn.addActionListener(imgurSubmitBtnActionListener());
 		
@@ -192,9 +214,7 @@ public class GalleryDownloader extends JFrame {
 		fieldsPane.removeAll();
 		
 		JLabel memberIDLabel = new JLabel("Member ID:");
-		
 		pixivID = new JTextField(10);
-		
 		JButton submitBtn = new JButton("Get Gallery");
 		submitBtn.addActionListener(imgurSubmitBtnActionListener());
 		
