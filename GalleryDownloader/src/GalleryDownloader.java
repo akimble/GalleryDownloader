@@ -1,6 +1,7 @@
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,7 +30,7 @@ import javax.swing.JMenu;
 @SuppressWarnings("serial")
 public class GalleryDownloader extends JFrame {
 
-	private static String folderPath = "C:/Users/Andrew/Downloads/";
+	private static String folderPath = new File("").getAbsolutePath();
 	private JPanel headerPane;
 	private JPanel fieldsPane;
 	private JTextField imgurURL;
@@ -105,7 +106,7 @@ public class GalleryDownloader extends JFrame {
 				chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 				
 				if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION)
-					folderPath = chooser.getCurrentDirectory().toString();
+					folderPath = chooser.getSelectedFile().toString();
 			}
 		};
 		
