@@ -1,6 +1,6 @@
+package GalleryDownloader;
+
 import java.awt.EventQueue;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -10,16 +10,10 @@ import java.net.URL;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
-
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 
 import javax.swing.JLabel;
 import net.miginfocom.swing.MigLayout;
@@ -28,9 +22,9 @@ import javax.swing.JMenuItem;
 import javax.swing.JMenu;
 
 @SuppressWarnings("serial")
-public class GalleryDownloader extends JFrame {
+public class MyViewClass extends JFrame {
 
-	private static String folderPath = new File("").getAbsolutePath();
+	private String folderPath = new File("").getAbsolutePath();
 	private JPanel headerPane;
 	private JPanel fieldsPane;
 	private JTextField imgurURL;
@@ -44,7 +38,7 @@ public class GalleryDownloader extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					GalleryDownloader frame = new GalleryDownloader();
+					MyViewClass frame = new MyViewClass();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -54,7 +48,7 @@ public class GalleryDownloader extends JFrame {
 	}
 
 	// Initialize the components
-	public GalleryDownloader() {
+	private MyViewClass() {
 		init();
 	}
 
@@ -71,7 +65,8 @@ public class GalleryDownloader extends JFrame {
 		menuBar.add(mnFile);
 		mntmSetFolder = new JMenuItem("Set folder...");
 		mnFile.add(mntmSetFolder);
-		mntmSetFolder.addActionListener(mntmActionListener());
+		chooseDwnldFolderActionListener listener1 = new chooseDwnldFolderActionListener(this);
+		mntmSetFolder.addActionListener(listener1);
 		
 		// Create the first JPanel
 		headerPane = new JPanel();
@@ -85,7 +80,8 @@ public class GalleryDownloader extends JFrame {
 		// Create the ComboBox and its listener
 		String[] domainStrings = { "", "Imgur", "Pixiv" };
 		JComboBox domainList = new JComboBox(domainStrings);
-		domainList.addActionListener(comboBoxActionListener());
+		chooseDomainActionListener listener2 = new chooseDomainActionListener(this);
+		domainList.addActionListener(listener2);
 		
 		// Create a new JPanel to put under headerPane for most of the dynamic fields
 		fieldsPane = new JPanel();
@@ -96,78 +92,8 @@ public class GalleryDownloader extends JFrame {
 		headerPane.add(fieldsPane, "cell 0 1 3 1,grow");
 	}
 	
-	// Set the download folder
-	private ActionListener mntmActionListener() {
-		ActionListener res = new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				JFileChooser chooser = new JFileChooser();
-				chooser.setCurrentDirectory(null); // Passing in null = OS's default directory
-				chooser.setDialogTitle("Set download folder...");
-				chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-				
-				if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION)
-					folderPath = chooser.getSelectedFile().toString();
-			}
-		};
-		
-		return res;
-	}
-
-	// Call respective method for creating the chosen domain's fields
-	private ActionListener comboBoxActionListener(){
-		ActionListener res = new ActionListener(){
-			@SuppressWarnings("unchecked")
-			public void actionPerformed(ActionEvent arg0) {
-				JComboBox<String> cb = (JComboBox<String>)arg0.getSource();
-				String domainName = (String)cb.getSelectedItem();
-				
-				switch(domainName){
-					case "Imgur":
-						createImgurFields(domainName);
-						break;
-					case "Pixiv":
-						createPixivFields(domainName);
-						break;
-				}
-			}
-		};
-		
-		return res;
-	}
-
-	// Call respective method for creating the chosen domain's fields
-	private ActionListener imgurSubmitBtnActionListener(){
-		ActionListener res = new ActionListener(){
-		public void actionPerformed(ActionEvent e) {
-			String url = imgurURL.getText();
-			
-			try {
-				// Get the Document from the url
-				Document document = Jsoup
-						.connect(url)
-						.userAgent("Mozilla/5.0")
-						.referrer("https://www.google.com")
-						.timeout(10 * 1000)
-						.get();
-				
-				Elements images = document.select("img");
-				
-				for (Element image : images) {
-					System.out.println(image);
-					String imageSrc = image.absUrl("src");
-					
-					downloadImage(imageSrc);
-				}
-			} catch (IOException e1) {
-				System.err.println("An error occured: " + e1.getMessage());
-			}
-		}};
-		
-		return res;
-	}
-	
 	// Download the image from the source URL
-	protected void downloadImage(String imageSrc) {
+	void downloadImage(String imageSrc) {
 		String strImageName = imageSrc.substring(imageSrc.lastIndexOf("/") + 1);
 		
 		System.out.println("Saving '" + strImageName + "' from " + imageSrc);
@@ -194,13 +120,14 @@ public class GalleryDownloader extends JFrame {
 	}
 
 	// Remove all fields in fieldsPane and then create the Imgur fields
-	private void createImgurFields(String domainName) {
+	void createImgurFields(String domainName) {
 		fieldsPane.removeAll();
 		
 		JLabel urlLabel = new JLabel("URL:");
 		imgurURL = new JTextField(10);
 		JButton submitBtn = new JButton("Get Gallery");
-		submitBtn.addActionListener(imgurSubmitBtnActionListener());
+		imgurSubmitBtnActionListener listener3 = new imgurSubmitBtnActionListener(this);
+		submitBtn.addActionListener(listener3);
 		
 		fieldsPane.add(urlLabel);
 		fieldsPane.add(imgurURL);
@@ -211,13 +138,13 @@ public class GalleryDownloader extends JFrame {
 	}
 
 	// Remove all fields in fieldsPane and then create the Pixiv fields
-	private void createPixivFields(String domainName) {
+	void createPixivFields(String domainName) {
 		fieldsPane.removeAll();
 		
 		JLabel memberIDLabel = new JLabel("Member ID:");
 		pixivID = new JTextField(10);
 		JButton submitBtn = new JButton("Get Gallery");
-		submitBtn.addActionListener(imgurSubmitBtnActionListener());
+		//submitBtn.addActionListener(imgurSubmitBtnActionListener());
 		
 		fieldsPane.add(memberIDLabel);
 		fieldsPane.add(pixivID);
@@ -226,5 +153,13 @@ public class GalleryDownloader extends JFrame {
 		revalidate();
 		repaint();
 	}
+
+	void setFolderPath(String newPath) {
+		folderPath = newPath;
+	}
+
+    JTextField getImgurURL() {
+        return imgurURL;
+    }
 
 }
