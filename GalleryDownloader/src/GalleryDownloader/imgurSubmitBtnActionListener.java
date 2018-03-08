@@ -10,15 +10,15 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 
 public class imgurSubmitBtnActionListener implements ActionListener {
-    private final MyViewClass myView;
+    private final Imgur myImgur;
 
-    imgurSubmitBtnActionListener(MyViewClass myView) {
-        this.myView = myView;
+    imgurSubmitBtnActionListener(Imgur myImgur) {
+        this.myImgur = myImgur;
     }
 
     // Download the images from the URL into the download folder
     public void actionPerformed(ActionEvent e) {
-        String url = myView.getImgurURL().getText();
+        String url = myImgur.getUrlTxtFld();
 
         try {
             // Get the Document from the url
@@ -35,7 +35,7 @@ public class imgurSubmitBtnActionListener implements ActionListener {
                 System.out.println(image);
                 String imageSrc = image.absUrl("src");
 
-                myView.downloadImage(imageSrc);
+                myImgur.downloadImage(imageSrc);
             }
         } catch (IOException e1) {
             System.err.println("An error occured: " + e1.getMessage());

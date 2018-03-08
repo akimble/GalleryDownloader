@@ -27,7 +27,6 @@ public class MyViewClass extends JFrame {
 	private String folderPath = new File("").getAbsolutePath();
 	private JPanel headerPane;
 	private JPanel fieldsPane;
-	private JTextField imgurURL;
 	private JTextField pixivID;
 	private JMenuBar menuBar;
 	private JMenu mnFile;
@@ -91,51 +90,6 @@ public class MyViewClass extends JFrame {
 		headerPane.add(domainList, "cell 1 0,alignx left,aligny top");
 		headerPane.add(fieldsPane, "cell 0 1 3 1,grow");
 	}
-	
-	// Download the image from the source URL
-	void downloadImage(String imageSrc) {
-		String strImageName = imageSrc.substring(imageSrc.lastIndexOf("/") + 1);
-		
-		System.out.println("Saving '" + strImageName + "' from " + imageSrc);
-		
-		try {
-			URL imageURL = new URL(imageSrc);
-			InputStream iss = imageURL.openStream();
-			
-			byte[] buffer = new byte[4096];
-			int n = -1;
-			
-			OutputStream oss = new FileOutputStream(folderPath + "/" + strImageName);
-			
-			while ((n = iss.read(buffer)) != -1) {
-				oss.write(buffer, 0, n);
-			}
-			
-			oss.close();
-			
-			System.out.println(strImageName + " saved.");
-		} catch (IOException e) {
-			System.err.println("An error occured: " + e.getMessage());
-		}
-	}
-
-	// Remove all fields in fieldsPane and then create the Imgur fields
-	void createImgurFields(String domainName) {
-		fieldsPane.removeAll();
-		
-		JLabel urlLabel = new JLabel("URL:");
-		imgurURL = new JTextField(10);
-		JButton submitBtn = new JButton("Get Gallery");
-		imgurSubmitBtnActionListener listener3 = new imgurSubmitBtnActionListener(this);
-		submitBtn.addActionListener(listener3);
-		
-		fieldsPane.add(urlLabel);
-		fieldsPane.add(imgurURL);
-		fieldsPane.add(submitBtn, "cell 1 2,alignx center");
-		
-		revalidate();
-		repaint();
-	}
 
 	// Remove all fields in fieldsPane and then create the Pixiv fields
 	void createPixivFields(String domainName) {
@@ -158,8 +112,12 @@ public class MyViewClass extends JFrame {
 		folderPath = newPath;
 	}
 
-    JTextField getImgurURL() {
-        return imgurURL;
+	String getFolderPath() {
+		return folderPath;
+	}
+
+	JPanel getFieldsPane() {
+	    return fieldsPane;
     }
 
 }

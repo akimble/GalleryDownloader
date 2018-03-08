@@ -11,18 +11,12 @@ public class chooseDomainActionListener implements ActionListener {
         this.myView = myView;
     }
 
-    // Call respective method for creating the chosen domain's fields
+    // Call respective method for creating the chosen domain's fields using a Factory object
     public void actionPerformed(ActionEvent e) {
         JComboBox<String> cb = (JComboBox<String>)e.getSource();
         String domainName = (String)cb.getSelectedItem();
 
-        switch(domainName) {
-            case "Imgur":
-                myView.createImgurFields(domainName);
-                break;
-            case "Pixiv":
-                myView.createPixivFields(domainName);
-                break;
-        }
+        Domain df = DomainFactory.getDomain(myView, domainName);
+        df.createFields();
     }
 }
